@@ -1,0 +1,547 @@
+{
+  "info": {
+    "name": "Recipe Book API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create recipe (Plov)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Plov\",\n  \"cuisine\": \"Uzbek\",\n  \"category\": \"main\",\n  \"cook_time_minutes\": 90,\n  \"servings\": 6,\n  \"ingredients\": [\n    {\n      \"name\": \"Rice\",\n      \"amount\": \"500 g\"\n    },\n    {\n      \"name\": \"Beef\",\n      \"amount\": \"600 g\"\n    },\n    {\n      \"name\": \"Carrots\",\n      \"amount\": \"600 g\"\n    },\n    {\n      \"name\": \"Onions\",\n      \"amount\": \"2 pcs\"\n    }\n  ],\n  \"instructions\": \"Fry the meat, add onions and carrots, add rice and water, cook covered.\",\n  \"favorite\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"201\", () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set(\"recipe_id\", pm.response.json().id);",
+              "pm.test(\"ingredients saved\", () => pm.expect(pm.response.json().ingredients.length).to.eql(4));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create recipe (Achichuk)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Achichuk\",\n  \"cuisine\": \"Uzbek\",\n  \"category\": \"salad\",\n  \"cook_time_minutes\": 10,\n  \"servings\": 2,\n  \"ingredients\": [\n    {\n      \"name\": \"Tomatoes\",\n      \"amount\": \"3 pcs\"\n    },\n    {\n      \"name\": \"Onion\",\n      \"amount\": \"1 pc\"\n    }\n  ],\n  \"instructions\": \"Slice thinly, add salt and pepper.\",\n  \"favorite\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"201\", () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create recipe - invalid time (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Bad\",\n  \"category\": \"main\",\n  \"cook_time_minutes\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"422\", () => pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create recipe - invalid category (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Bad\",\n  \"category\": \"pizza\",\n  \"cook_time_minutes\": 10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"422\", () => pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List recipes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get recipe by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes/{{recipe_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipe_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"title\", () => pm.expect(pm.response.json().title).to.eql(\"Plov\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update recipe",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes/{{recipe_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipe_id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Plov (family recipe)\",\n  \"cuisine\": \"Uzbek\",\n  \"category\": \"main\",\n  \"cook_time_minutes\": 100,\n  \"servings\": 8,\n  \"ingredients\": [\n    {\n      \"name\": \"Rice\",\n      \"amount\": \"500 g\"\n    },\n    {\n      \"name\": \"Beef\",\n      \"amount\": \"600 g\"\n    },\n    {\n      \"name\": \"Carrots\",\n      \"amount\": \"600 g\"\n    },\n    {\n      \"name\": \"Onions\",\n      \"amount\": \"2 pcs\"\n    }\n  ],\n  \"instructions\": \"Fry the meat, add onions and carrots, add rice and water, cook covered.\",\n  \"favorite\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"updated\", () => pm.expect(pm.response.json().servings).to.eql(8));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mark as favorite (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/recipes/{{recipe_id}}/favorite",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipe_id}}",
+            "favorite"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"favorite\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"favorite\", () => pm.expect(pm.response.json().favorite).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Filter - category=salad",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes?category=salad",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "salad"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"all salads\", () => pm.response.json().forEach(r => pm.expect(r.category).to.eql(\"salad\")));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Filter - favorite=true",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes?favorite=true",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "favorite",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"all favorites\", () => pm.response.json().forEach(r => pm.expect(r.favorite).to.eql(true)));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Filter - max_time=30",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes?max_time=30",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "max_time",
+              "value": "30"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"all quick\", () => pm.response.json().forEach(r => pm.expect(r.cook_time_minutes).to.be.at.most(30)));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search - q=plov",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes?q=plov",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "plov"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"found\", () => pm.expect(pm.response.json().length).to.be.at.least(1));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete recipe",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes/{{recipe_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipe_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"204\", () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get deleted recipe (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/recipes/{{recipe_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "recipes",
+            "{{recipe_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"404\", () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "recipe_id",
+      "value": "1"
+    }
+  ]
+}

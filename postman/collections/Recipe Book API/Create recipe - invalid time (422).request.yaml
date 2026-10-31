@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/recipes"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Bad",
+      "category": "main",
+      "cook_time_minutes": 0
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("422", () => pm.response.to.have.status(422));
+    language: text/javascript
+order: 4000

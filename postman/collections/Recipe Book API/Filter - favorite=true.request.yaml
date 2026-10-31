@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/recipes?favorite=true"
+method: GET
+queryParams:
+  favorite: "true"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200", () => pm.response.to.have.status(200));
+      pm.test("all favorites", () => pm.response.json().forEach(r => pm.expect(r.favorite).to.eql(true)));
+    language: text/javascript
+order: 11000

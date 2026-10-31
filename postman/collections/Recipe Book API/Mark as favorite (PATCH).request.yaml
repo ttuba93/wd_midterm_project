@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/recipes/{{recipe_id}}/favorite"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "favorite": true
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200", () => pm.response.to.have.status(200));
+      pm.test("favorite", () => pm.expect(pm.response.json().favorite).to.eql(true));
+    language: text/javascript
+order: 9000

@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{base_url}}/recipes"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Achichuk",
+      "cuisine": "Uzbek",
+      "category": "salad",
+      "cook_time_minutes": 10,
+      "servings": 2,
+      "ingredients": [
+        {
+          "name": "Tomatoes",
+          "amount": "3 pcs"
+        },
+        {
+          "name": "Onion",
+          "amount": "1 pc"
+        }
+      ],
+      "instructions": "Slice thinly, add salt and pepper.",
+      "favorite": false
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("201", () => pm.response.to.have.status(201));
+    language: text/javascript
+order: 3000

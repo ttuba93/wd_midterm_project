@@ -1,0 +1,42 @@
+$kind: http-request
+url: "{{base_url}}/recipes/{{recipe_id}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Plov (family recipe)",
+      "cuisine": "Uzbek",
+      "category": "main",
+      "cook_time_minutes": 100,
+      "servings": 8,
+      "ingredients": [
+        {
+          "name": "Rice",
+          "amount": "500 g"
+        },
+        {
+          "name": "Beef",
+          "amount": "600 g"
+        },
+        {
+          "name": "Carrots",
+          "amount": "600 g"
+        },
+        {
+          "name": "Onions",
+          "amount": "2 pcs"
+        }
+      ],
+      "instructions": "Fry the meat, add onions and carrots, add rice and water, cook covered.",
+      "favorite": false
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200", () => pm.response.to.have.status(200));
+      pm.test("updated", () => pm.expect(pm.response.json().servings).to.eql(8));
+    language: text/javascript
+order: 8000

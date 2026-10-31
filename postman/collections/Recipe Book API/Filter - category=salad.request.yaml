@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/recipes?category=salad"
+method: GET
+queryParams:
+  category: salad
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200", () => pm.response.to.have.status(200));
+      pm.test("all salads", () => pm.response.json().forEach(r => pm.expect(r.category).to.eql("salad")));
+    language: text/javascript
+order: 10000

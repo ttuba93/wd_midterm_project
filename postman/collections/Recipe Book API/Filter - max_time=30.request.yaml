@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/recipes?max_time=30"
+method: GET
+queryParams:
+  max_time: "30"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("200", () => pm.response.to.have.status(200));
+      pm.test("all quick", () => pm.response.json().forEach(r => pm.expect(r.cook_time_minutes).to.be.at.most(30)));
+    language: text/javascript
+order: 12000
